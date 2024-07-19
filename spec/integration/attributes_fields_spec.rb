@@ -51,12 +51,21 @@ RSpec.describe JSONAPI::Serializer do
       it do
         expect(serialized['data'])
           .to have_jsonapi_attributes(:first_name).exactly
+      end
 
+      it do
         expect(serialized['included']).to include(
           have_type('movie')
           .and(have_id(actor.movies[0].id))
           .and(have_jsonapi_attributes('release_year').exactly)
         )
+      end
+
+      it do
+        played_movies_rel = [{ 'id' => actor.movies[0].id, 'type' => 'movie' }]
+
+        expect(serialized['data'])
+          .to have_relationship('played_movies').with_data(played_movies_rel)
       end
     end
   end
